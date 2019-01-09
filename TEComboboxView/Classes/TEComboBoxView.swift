@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol TEComboBoxViewDelegate: class {
+public protocol TEComboBoxViewDelegate: class {
     func comboBoxView(_ comboBoxView: TEComboBoxView, didSelectRowAt row: Int, title: String)
 }
 
@@ -18,7 +18,7 @@ extension TEComboBoxViewDelegate {
     }
 }
 
-class TEComboBoxView: UIView {
+open class TEComboBoxView: UIView {
     
     open var icon: UIImage? {
         didSet {
@@ -27,7 +27,7 @@ class TEComboBoxView: UIView {
             let length = 24
             imageView.frame = CGRect(x: 0, y: 0, width: length, height: length)
             imageView.contentMode = .scaleAspectFit
-           
+            
             contentTextField.rightView = imageView
         }
     }
@@ -79,7 +79,7 @@ class TEComboBoxView: UIView {
         return view
     }()
     
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         textAlignment = .center
         super.init(frame: frame)
         
@@ -90,11 +90,11 @@ class TEComboBoxView: UIView {
         self.setBorder()
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateConstraints() {
+    override open func updateConstraints() {
         let views = ["textField": contentTextField]
         let textFieldHConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[textField]|", options: .alignAllCenterY, metrics: nil, views: views)
         let textFieldVConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[textField]|", options: .alignAllCenterX, metrics: nil, views: views)
@@ -104,24 +104,26 @@ class TEComboBoxView: UIView {
 }
 
 extension TEComboBoxView: UITextFieldDelegate {
-    func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
+    
+   public func textFieldShouldBeginEditing(_ textField: UITextField) -> Bool {
         displayListView()
         return false
     }
 }
 
 extension TEComboBoxView: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return options?.count ?? 0
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         cell.textLabel?.text = options?[indexPath.row]
         return cell
     }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         displayListView()
         let text = self.options?[indexPath.row]
         contentTextField.text = text
@@ -133,10 +135,9 @@ extension TEComboBoxView: UITableViewDataSource, UITableViewDelegate {
             optionSelected(indexPath.row, title)
         }
     }
-    
 }
 
-extension TEComboBoxView {
+private extension TEComboBoxView {
     @objc private func displayListView() {
         if !show {
             let keyWindow = UIApplication.shared.keyWindow!
@@ -151,7 +152,7 @@ extension TEComboBoxView {
             } else {
                 height = CGFloat(self.options?.count ?? 0) * convertRect.height
             }
-             self.listView.frame = CGRect(x: convertRect.minX, y: convertRect.maxY, width: convertRect.width, height: height)
+            self.listView.frame = CGRect(x: convertRect.minX, y: convertRect.maxY, width: convertRect.width, height: height)
             
             self.show = true
         } else {
@@ -162,7 +163,7 @@ extension TEComboBoxView {
     }
 }
 
-internal extension UIView {
+fileprivate extension UIView {
     fileprivate func setBorder() {
         layer.borderColor = UIColor.lightGray.cgColor
         layer.borderWidth = 0.5
