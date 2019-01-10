@@ -82,16 +82,21 @@ open class TEComboBoxView: UIView {
     public override init(frame: CGRect) {
         textAlignment = .center
         super.init(frame: frame)
-        
+        setupView()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        textAlignment = .center
+        super.init(coder: aDecoder)
+        setupView()
+    }
+    
+    private func setupView() {
         self.addSubview(contentTextField)
         self.setNeedsUpdateConstraints()
         contentTextField.translatesAutoresizingMaskIntoConstraints = false
         
         self.setBorder()
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
     
     override open func updateConstraints() {
