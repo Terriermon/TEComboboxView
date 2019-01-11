@@ -47,6 +47,9 @@ open class TEComboBoxView: UIView {
     open var options:[String]? {
         didSet {
             listView.reloadData()
+            if self.placeholder == nil {
+                self.contentTextField.text = options?.first
+            }
         }
     }
     
